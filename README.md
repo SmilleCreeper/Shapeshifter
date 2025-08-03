@@ -6,6 +6,7 @@ Shapeshifter is a Streamlit application that showcases a novel image compression
 
 - **Lossless Compression in HSL Space**: The compression stage is completely lossless, with any precision loss occurring only during the initial RGB to HSL conversion. If the input image is already optimized for HSL, the entire process is lossless.
 - **Significant Size Reduction**: On a test image of approximately 2000x3000 pixels, Shapeshifter achieves a file size reduction of 30-40% compared to the original PNG.
+- **Reduced Precision Mode**: Optionally reduce HSL precision (H: 360°→256°, S: 100°→64°, L: 100°→64°) to achieve up to **2x file size reduction** on the same image compared to full precision mode, with minimal impact on visual quality.
 - **Interactive Analysis**: The Streamlit app provides detailed insights into the compression process, including:
 - Per-channel (H, S, L) unique value analysis
 - Rectangular encoding details with bit optimization
@@ -19,7 +20,7 @@ Shapeshifter is a Streamlit application that showcases a novel image compression
 
 - **Image Upload**: Upload a PNG image via the Streamlit interface.
 - **RGB to HSL Conversion**: The image is converted from RGB to HSL color space, with potential minor precision loss due to floating-point calculations.
-- **HSL Quantization**: Hue (0-360), Saturation (0-100), and Lightness (0-100) are quantized to integers for efficient encoding.
+- **HSL Quantization**: Hue (0-360), Saturation (0-100), and Lightness (0-100) are quantized to integers for efficient encoding. Reduced Precision: H (0-255), S (0-63), L (0-63), enabling up to 2x better compression.
 
 - **Rectangular Encoding**: Each HSL channel is analyzed to identify rectangular regions of uniform values, which are encoded using:
 - *A lookup table for unique values with optimized bit allocation*
@@ -64,18 +65,17 @@ pandas
 
 # 📊 Performance
 
-On a test image of ~2000x3000 pixels, Shapeshifter achieves a 30-40% reduction in file size compared to the original PNG. The compression is most effective for images with large areas of uniform color in HSL space, as the rectangular encoding optimizes for these regions.
+On a ~2000x3000 pixel test image, Shapeshifter achieves a **30-40% file size reduction in full precision mode** compared to the original PNG. By enabling reduced precision mode, the same image can **achieve up to 50% reduction** (effectively halving the file size), making it twice as efficient while maintaining high visual fidelity. The compression is most effective for images with large areas of uniform color in HSL space, as the rectangular encoding optimizes for these regions.
 
 # ⚠️ Limitations
 
-**RGB to HSL Conversion**: Minor precision loss may occur during the RGB to HSL conversion due to floating-point arithmetic. This can be mitigated by starting with HSL-optimized images.
-**PNG-Specific**: The current implementation is optimized for PNG files and assumes lossless input.
+- **RGB to HSL Conversion**: Minor precision loss may occur during the RGB to HSL conversion due to floating-point arithmetic. This can be mitigated by starting with HSL-optimized images.
+- **PNG-Specific**: The current implementation is optimized for PNG files and assumes lossless input.
+- **Processing Time**: Large images may require significant computation time due to the iterative rectangular encoding process.
 
 # 🔮 Future Improvements
 
-Support additional image formats (e.g., JPEG).
-Implement parallel processing for HSL conversion and encoding.
-Add export functionality for the compressed format.
-Add color palette mappings to reduce size for flat images.
-Break down Streamlit app into separate modules.
-Button to process the file so it doesn't repeat every time the UI is updated.
+- Support additional image formats (e.g., JPEG).
+- Implement parallel processing for HSL conversion and encoding.
+- Add export functionality for the compressed format.
+- Break down Streamlit app into separate modules.
